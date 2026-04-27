@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="EduFit" />
+  <meta name="description" content="EduFit — Seu treino, sua evolução" />
+
+  <title>EduFit — Eduardo</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Apple Icons -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="icons/icon-192.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== SIDEBAR ===================== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <div class="logo-text">
+        <span class="logo-name">EduFit</span>
+        <span class="logo-sub">Eduardo</span>
+      </div>
+    </div>
+    <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">✕</button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-view="dashboard" onclick="navigateTo('dashboard')">
+      <span class="nav-icon">◈</span>
+      <span>Dashboard</span>
+    </button>
+
+    <div class="nav-section-label">Treinos</div>
+
+    <button class="nav-item" data-day="0" onclick="navigateToDay(0)">
+      <span class="nav-icon">🦵</span>
+      <div class="nav-info">
+        <span>Segunda-feira</span>
+        <span class="nav-sub">Perna completa</span>
+      </div>
+      <span class="nav-badge" id="badge-0"></span>
+    </button>
+
+    <button class="nav-item" data-day="1" onclick="navigateToDay(1)">
+      <span class="nav-icon">💪</span>
+      <div class="nav-info">
+        <span>Terça-feira</span>
+        <span class="nav-sub">Peito · Ombro · Tríceps</span>
+      </div>
+      <span class="nav-badge" id="badge-1"></span>
+    </button>
+
+    <button class="nav-item" data-day="2" onclick="navigateToDay(2)">
+      <span class="nav-icon">🏋️</span>
+      <div class="nav-info">
+        <span>Quarta-feira</span>
+        <span class="nav-sub">Costas · Bíceps</span>
+      </div>
+      <span class="nav-badge" id="badge-2"></span>
+    </button>
+
+    <button class="nav-item rest-day" data-day="3" onclick="navigateToDay(3)">
+      <span class="nav-icon">😴</span>
+      <div class="nav-info">
+        <span>Quinta-feira</span>
+        <span class="nav-sub">Descanso</span>
+      </div>
+    </button>
+
+    <button class="nav-item" data-day="4" onclick="navigateToDay(4)">
+      <span class="nav-icon">🦵</span>
+      <div class="nav-info">
+        <span>Sexta-feira</span>
+        <span class="nav-sub">Perna completa</span>
+      </div>
+      <span class="nav-badge" id="badge-4"></span>
+    </button>
+
+    <button class="nav-item" data-day="5" onclick="navigateToDay(5)">
+      <span class="nav-icon">💥</span>
+      <div class="nav-info">
+        <span>Sábado</span>
+        <span class="nav-sub">Superior completo</span>
+      </div>
+      <span class="nav-badge" id="badge-5"></span>
+    </button>
+
+    <button class="nav-item" data-day="6" onclick="navigateToDay(6)">
+      <span class="nav-icon">🎯</span>
+      <div class="nav-info">
+        <span>Domingo</span>
+        <span class="nav-sub">Opcional</span>
+      </div>
+      <span class="nav-badge" id="badge-6"></span>
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="nav-item" onclick="navigateTo('progress')">
+      <span class="nav-icon">📈</span>
+      <span>Evolução</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('settings')">
+      <span class="nav-icon">⚙️</span>
+      <span>Configurações</span>
+    </button>
+  </div>
+</aside>
+
+<!-- Overlay para mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ===================== MAIN ===================== -->
+<main class="main" id="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <button class="topbar-menu" id="menuToggle" onclick="toggleSidebar()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-center" id="topbarTitle">EduFit</div>
+    <div class="topbar-actions">
+      <button class="icon-btn" onclick="openSearch()" title="Buscar">🔍</button>
+    </div>
+  </header>
+
+  <!-- Search Bar -->
+  <div class="search-bar" id="searchBar">
+    <input type="text" id="searchInput" placeholder="Buscar exercício..." oninput="searchExercises(this.value)" />
+    <button onclick="closeSearch()">✕</button>
+  </div>
+
+  <!-- ===================== VIEWS ===================== -->
+
+  <!-- DASHBOARD VIEW -->
+  <section class="view active" id="view-dashboard">
+    <div class="view-content">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle" id="dashGreeting">Bom dia, Eduardo! 💪</p>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🔥</div>
+          <div class="stat-value" id="statWeekCount">0</div>
+          <div class="stat-label">Treinos esta semana</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" id="statWeekProgress">0%</div>
+          <div class="stat-label">Progresso semanal</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-value" id="statTotalWorkouts">0</div>
+          <div class="stat-label">Total de treinos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-value" id="statStreak">0</div>
+          <div class="stat-label">Dias seguidos</div>
+        </div>
+      </div>
+
+      <!-- Weekly progress bar -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Semana Atual</h3>
+          <button class="btn-link" onclick="confirmResetWeek()">Reset semanal</button>
+        </div>
+        <div class="week-grid" id="weekGrid"></div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="weekProgressBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Today's workout -->
+      <div class="card" id="todayCard">
+        <div class="card-header">
+          <h3>Treino de Hoje</h3>
+        </div>
+        <div id="todayContent"></div>
+      </div>
+
+      <!-- Last workout -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Último Treino</h3>
+        </div>
+        <div id="lastWorkoutContent">
+          <p class="empty-msg">Nenhum treino registrado ainda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAY VIEW -->
+  <section class="view" id="view-day">
+    <div class="view-content">
+      <div class="page-header">
+        <h1 class="page-title" id="dayTitle">Segunda-feira</h1>
+        <p class="page-subtitle" id="daySubtitle">Perna completa</p>
+      </div>
+
+      <!-- Workout controls -->
+      <div class="workout-controls" id="workoutControls">
+        <div class="progress-info">
+          <span id="exerciseProgressText">0/0 exercícios</span>
+          <span id="workoutStatus"></span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="dayProgressBar" style="width:0%"></div>
+        </div>
+        <div class="control-buttons">
+          <button class="btn btn-primary" id="startWorkoutBtn" onclick="startWorkout()">▶ Iniciar Treino</button>
+          <button class="btn btn-success hidden" id="finishWorkoutBtn" onclick="finishWorkout()">✓ Finalizar Treino</button>
+          <button class="btn btn-outline" onclick="openAddExercise()">+ Exercício</button>
+          <button class="btn btn-outline" onclick="openDuplicateModal()">↗ Duplicar</button>
+        </div>
+      </div>
+
+      <!-- Rest day message -->
+      <div class="rest-day-msg hidden" id="restDayMsg">
+        <div class="rest-icon">😴</div>
+        <h2>Dia de Descanso</h2>
+        <p>Recupere-se bem. Seu corpo agradece!</p>
+      </div>
+
+      <!-- Exercise list -->
+      <div id="exerciseList"></div>
+
+      <!-- Empty state -->
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">🏋️</div>
+        <h3>Nenhum exercício cadastrado</h3>
+        <p>Adicione exercícios para começar seu treino.</p>
+        <button class="btn btn-primary" onclick="openAddExercise()">+ Adicionar Exercício</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESS VIEW -->
+  <section class="view" id="view-progress">
+    <div class="view-content">
+      <div class="page-header">
+        <h1 class="page-title">Evolução</h1>
+        <p class="page-subtitle">Acompanhe seu progresso</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Gráfico de Carga</h3>
+        </div>
+        <div class="chart-controls">
+          <select id="chartExerciseSelect" onchange="renderChart()">
+            <option value="">Selecione um exercício...</option>
+          </select>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="progressChart" width="600" height="280"></canvas>
+          <p class="empty-msg" id="chartEmptyMsg">Selecione um exercício para ver a evolução.</p>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Histórico de Treinos</h3>
+        </div>
+        <div id="historyList">
+          <p class="empty-msg">Nenhum histórico registrado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS VIEW -->
+  <section class="view" id="view-settings">
+    <div class="view-content">
+      <div class="page-header">
+        <h1 class="page-title">Configurações</h1>
+        <p class="page-subtitle">Personalize sua experiência</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Timer de Descanso</h3></div>
+        <div class="setting-row">
+          <label>Tempo padrão de descanso</label>
+          <div class="timer-select-wrap">
+            <button class="timer-opt" data-sec="60" onclick="setRestTimer(60)">60s</button>
+            <button class="timer-opt" data-sec="90" onclick="setRestTimer(90)">90s</button>
+            <button class="timer-opt" data-sec="120" onclick="setRestTimer(120)">120s</button>
+            <button class="timer-opt" data-sec="180" onclick="setRestTimer(180)">180s</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Backup de Dados</h3></div>
+        <div class="setting-row col">
+          <button class="btn btn-primary" onclick="exportData()">⬇ Exportar JSON</button>
+          <label class="btn btn-outline" style="cursor:pointer;">
+            ⬆ Importar JSON
+            <input type="file" accept=".json" onchange="importData(event)" style="display:none" />
+          </label>
+        </div>
+      </div>
+
+      <div class="card danger-zone">
+        <div class="card-header"><h3>Zona de Perigo</h3></div>
+        <button class="btn btn-danger" onclick="confirmResetAll()">🗑 Apagar todos os dados</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== MODALS ===================== -->
+
+<!-- Add / Edit Exercise Modal -->
+<div class="modal-overlay" id="exerciseModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle">Adicionar Exercício</h2>
+      <button class="modal-close" onclick="closeExerciseModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nome do Exercício *</label>
+        <input type="text" id="exName" placeholder="Ex: Agachamento Livre" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Séries</label>
+          <input type="number" id="exSeries" min="1" max="20" value="4" />
+        </div>
+        <div class="form-group">
+          <label>Repetições</label>
+          <input type="text" id="exReps" placeholder="Ex: 12 ou 8-12" value="12" />
+        </div>
+        <div class="form-group">
+          <label>Carga (kg)</label>
+          <input type="number" id="exLoad" min="0" step="0.5" placeholder="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea id="exNotes" placeholder="Dicas, variações, observações..." rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="exFavorite" />
+          <span class="checkmark"></span>
+          Marcar como favorito ⭐
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeExerciseModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveExercise()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Duplicate Day Modal -->
+<div class="modal-overlay" id="duplicateModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Duplicar Treino</h2>
+      <button class="modal-close" onclick="closeDuplicateModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Copiar exercícios de <strong id="dupFromLabel"></strong> para:</p>
+      <div id="dupDayOptions" class="dup-options"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeDuplicateModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmDuplicate()">Duplicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rest Timer Overlay -->
+<div class="timer-overlay hidden" id="timerOverlay">
+  <div class="timer-card">
+    <p class="timer-label">Descanso</p>
+    <div class="timer-display" id="timerDisplay">60</div>
+    <div class="timer-ring">
+      <svg viewBox="0 0 120 120">
+        <circle class="timer-ring-bg" cx="60" cy="60" r="54" />
+        <circle class="timer-ring-fg" id="timerRingFg" cx="60" cy="60" r="54" />
+      </svg>
+    </div>
+    <button class="btn btn-outline" onclick="skipTimer()">Pular</button>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 id="confirmTitle">Confirmar</h2>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMsg"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" id="confirmOkBtn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
